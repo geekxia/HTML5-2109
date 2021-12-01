@@ -1,0 +1,52 @@
+.qf-layout {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  &>.ant-layout {
+    width: 100%;
+    height: 100%;
+  }
+  .qf-main {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    min-width: 1000px;
+    padding: 20px;
+    box-sizing: border-box;
+    &>div {
+      height: 100%;
+      width: 100%;
+      // background-color: white;
+      box-sizing: border-box;
+      // padding: 15px;
+      border-radius: 3px;
+    }
+  }
+  .qf-aside {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    .logo {
+      padding: 15px 0;
+      text-align: center;
+      img {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    }
+    .trigger {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      color: white;
+      box-sizing: border-box;
+      padding-left: 30px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+  }
+
+}

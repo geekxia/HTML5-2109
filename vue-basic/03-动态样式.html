@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .a1 { color: red; }
+    .a2 { color: blue; }
+    .a3 { color: green; }
+    .f1 { font-size: 20px; }
+    .f2 { font-size: 40px; }
+    .box { color: red; }
+  </style>
+</head>
+<body>
+
+  <div id='app'>
+    <!-- <h1 :class='a' class="a1">九月快乐</h1> -->
+    <h1 :class='(`${a} f2`)'>八月快乐</h1>
+    <h1 :class='[a, "a1", 2>1?"f2":"f1"]'>九月快乐</h1>
+    <h1 :class='{"a1":true, [a]:aBol}'>十月快乐</h1>
+    <hr>
+
+    <!-- <h1 :style='bStyle' style="color:red;">一行文字</h1> -->
+    <!-- <h1 :style='bStyle'>一行文字</h1> -->
+    <!-- <h1 :style='[bStyle, {["font-size"]:"40px", paddingTop:"10px"}]'>二行文字</h1> -->
+    <h1 :style='{
+      color: "red",
+      fontSize: "30px",
+      ["padding-top"]: top+"px",
+      opacity: opt
+    }'>三行文字</h1>
+    <hr>
+
+    <div
+      @click='toggle'
+      :style='{background: bg, width:len+"px",height:len+"px"}'>
+    </div>
+
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+
+    // 动态class
+    // 注意：在同一个节点上可以同时使用动态样式和静态样式，但是我们不推荐这么写，不容易维护。
+    // 语法1： :class='表达式'
+    // 语法2： :class='[表达式1, 表达式2, bol?"a1":"a2", `${a}4`, getClass()]'
+    // 语法3： :class='{"类名1":布尔值1, "类名2":布尔值2, "类名3":布尔值3}'
+    // 结论：当:class是数组语法时，要求数组中的每个元素都是类名。当:class是对象语法时，对象中的key是类名，对象中的值是布尔结果。
+
+    // 动态style
+    // 推荐的语法： :style='{CSS属性名: 属性值, CSS属性名: 动态的属性值}'
+    // 注意：尽量不要在同个节点上同时使用 :class 和 :style
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        a: 'a2',
+        aBol: false,
+        bStyle: {
+          color: 'blue'
+        },
+        top: 30,
+        opt: 1,
+        len: 50,
+        bg: 'blue',
+        timer: null
+      },
+      methods: {
+        toggle() {
+          if(!this.timer) {
+            this.bg = 'red'
+            this.timer = setInterval(()=>{
+              this.len+=5
+            }, 180)
+          }else{
+            this.bg = 'blue'
+            clearInterval(this.timer)
+            this.timer = null
+          }
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

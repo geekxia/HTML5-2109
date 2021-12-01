@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .primary { background: blue; color: white; }
+    .danger { background: red; color: white; }
+    .success { background: green; color: white; }
+    .warning { background: yellow; color: white; }
+    .cancel { background: gray; color: black; }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <qf-button type='danger'></qf-button>
+    <qf-button type='cancel'></qf-button>
+    <qf-button type='warning'></qf-button>
+    <qf-button></qf-button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // Vue基础 = Vue声明式 + Vue组件化
+    // Vue开发 = Vue数据流 + Vue组件化
+
+    // 如何理解组件化？
+    // Vue组件实际是HTML元素的扩展，为了快速搭建前端应用。
+    // 组件化的两个意义：封装(便于维护、复用)，快速开发（使用第三方组件库快速搭积木）
+
+    // 自定义封装组件需要注意以下问题：
+    // 1、组件名必须是多个“单词”组成，并且中划线连接，避免与HTML原生标签命名冲突。
+    // 2、在选项中有一个必填选项template，用于指定组件的视图结构，在template可以使用所有Vue指令。
+    // 3、自定义组件也拥有11个生命周期、methods、watch、computed，但是不能用el。
+      // 父组件的生命周期范围比子组件生命周期范围，更广
+    // 4、子组件的props选项，用于接受父组件传递过来的自定义属性，接收之后可以用this访问。
+      // props接收的数据类型一般有String、Number、Boolean、Array、Object
+    // 5、子组件也可以自己独立的data声明式变量，但必须使用工厂函数来定义。因为自定义组件会被复用，如果没有使用工厂函数定义data，这将导致data的复制是一种浅拷贝。
+    // 6、子组件使用methods选项封装函数方法、事件处理器。
+
+
+    Vue.component('qf-button', {
+      template: `
+        <button
+          @click='handle'
+          v-text="btn.text"
+          :class='btn.type'>
+        </button>
+      `,
+      props: {
+        // text: { type: String, required: false, default:'按钮' },
+        type: { type: String, required: false, default: 'primary' }
+      },
+      // data: { count: 1 },
+      data() {
+        // do something
+        return {
+          count: 1
+        }
+      },
+      computed: {
+        btn() {
+          const arr = [
+            { type: 'primary', text: '确定' },
+            { type: 'danger', text: '危险' },
+            { type: 'warning', text: '警告' },
+            { type: 'cancel', text: '取消' }
+          ]
+          return arr.find(ele=>this.type===ele.type)
+        }
+      },
+      mounted() {
+        console.log('来自父组件的text', this.text)
+      },
+      beforeCreate() {
+        console.log('qf-button beforeCreate')
+      },
+      mounted() {
+        console.log('qf-button mounted')
+      },
+      methods:{
+        handle() {
+          this.count++
+          console.log('qf-button count', this.count)
+        }
+      }
+    })
+
+    // 根组件（Vue响应式系统）
+    new Vue({
+      data: {
+        msg: '我是父亲'
+      },
+      beforeCreate() {
+        console.log('app beforeCreate')
+      },
+      mounted() {
+        console.log('app mounted')
+      }
+    }).$mount('#app')
+
+
+
+
+  </script>
+
+  <script>
+    // 工厂模式
+    function factory() {
+      var data = { a: 1, b: 2 }
+      return data
+    }
+    const o1 = factory()
+    const o2 = factory()
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <qf-child-a></qf-child-a>
+    <br><hr><br>
+    <qf-child-b></qf-child-b>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 事件总线 new Bus()
+
+    // 作用：是一种基于订阅发布模式的组件间的通信方案。
+
+    // 为什么总线？在计算机上有一个主板（南桥、北桥）之间的线，被称为“总线”(bus)。
+
+    // 特点：在任意组件中bus.$emit()发消息，凡是订阅了这个频道的所有组件都能收到消息。这是Vue通信方案中唯一的一对多的通信方案。
+
+    // 面试题：思考Vue中有哪些通信方案？分别有什么特点？
+      // 1、父子组件通信：自定义属性props、自定义事件this.$emit()。只适用于父子组件之间的通信。
+      // 2、状态提升：当多个兄弟组件需要共享一个声明式变量时，我们通常的做法是把这个声明式变量定义在它们共同的父组件中，而不是定义子组件中。（学完React就知道这种通信思想了）
+      // 3、ref与$refs：在自定义组件上添加ref属性，用于快捷地访问这个组件实例。适用于在父组件中访问子组件的属性和方法（是单向的通信）。
+      // 4、$attrs与$listeners：在子组件中使用$attrs访问父组件传递过来的自定义属性（除class、style外），使用$listeners访问并调用父组件传递过来的自定义事件（可以向父组件发消息）。只适用于父子组件之间的通信。
+      // 5、$parent与$children：在任意组件中使用这组API可以在Vue组件中随意穿梭。适合于任意两个组件之间的通信（是单向的通信）。
+      // 6、provide与inject：在任意父级组件上使用provide选项提供数据，在其后代组件上使用inject选项来注入数据。适用有直接“血缘关系”的两个组件之间的通信（是单向的通信）。
+      // 7、事件总线：使用 new Vue() 事件总线（$on/$emit）来通信。适用于任意多个组件之间的通信，是基于订阅发布模式的通信方案，比如一对多的通信（是单向的通信）。
+      // 8、Vuex终极通信方案：在后面课程中再讲。
+
+    const bus = new Vue()  // 只能这么写，不要加选项
+    // bus.$on() 用于监听一个信号（频道）
+    // bus.$emit() 用于向一个频道上发信号
+
+    Vue.component('qf-child-a', {
+      template: `
+      <div>
+        <input type="text" v-model='msg' />
+        <button @click='send'>发送</button>
+        <br />
+        <div v-html='content'></div>
+      </div>
+      `,
+      data() {
+        return {
+          msg: '',
+          content: ''
+        }
+      },
+      created() {
+        bus.$on('aa', msg=>{
+          this.content += `<div>B：${msg}</div>`
+        })
+      },
+      methods: {
+        send() {
+          // 使用事件总线，向bb这个频道上发送一条信号
+          bus.$emit('bb', this.msg)
+          this.msg = ''
+        }
+      }
+    })
+
+    Vue.component('qf-child-b', {
+      template: `
+      <div>
+        <input type="text" v-model='msg' />
+        <button @click='send'>发送</button>
+        <br/>
+        <div v-html='content'></div>
+      </div>
+      `,
+      data() {
+        return {
+          content: '',
+          msg: ''
+        }
+      },
+      created() {
+        // 初始化时就订阅bb频道
+        bus.$on('bb', msg=>{
+          console.log('bb频道上有消息来了', msg)
+          this.content += `<div>A：${msg}</div>`
+        })
+      },
+      methods: {
+        send() {
+          bus.$emit('aa', this.msg)
+          this.msg = ''
+        }
+      }
+    })
+
+    const app = new Vue({
+      el: '#app'
+    })
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id='app'>
+    <h1 v-text='msg'></h1>
+    <h2 v-text='msg'></h2>
+    <button v-on:click='changeMsg'>变化</button>
+    <hr>
+
+    <h1 v-text='num'></h1>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // DOM思想（直接）：如果我想对某一个节点做操作，首先通过选择器找到这个节点，然后进行DOM操作。
+    // Vue思想（间接）：如何我想对某一个节点做操作，我们的思路是去修改这个DOM节点所对应的data变量（声明式变量）。
+    console.log('Vue', Vue)
+    // 创建一个Vue响应式系统
+    var app = new Vue({
+      // 指定Vue响应式系统挂载的节点（把Vue和DOM关联起来）
+      el: '#app',
+      // 用于定义Vue声明式变量（响应式变量）
+      // 声明式变量有什么特点？当声明式变量发生变化时，把所对应的DOM视图自动更新。
+      data: {
+        msg: 'Hello World',
+        num: 0
+      },
+      // 用于定义函数或方法，比如所有的事件处理器都要定义在这里
+      methods: {
+        changeMsg() {
+          console.log('clicked')
+          this.msg = 'Hello 2109'
+        }
+      },
+      // 生命周期
+      mounted() {
+        setInterval(()=>{
+          this.num++
+        }, 1000)
+      }
+    })
+  </script>
+
+  <script>
+    // 作业1：把开班讲的学习方法自我反思
+    // 作业2：根据这个Hello知识demo，写你对DOM思想和Vue思想的简单理解。
+      // 面试题：jquery和vue有什么区别？
+    // 作业3：翻阅vue文档，混个眼熟。
+  </script>
+
+</body>
+</html>

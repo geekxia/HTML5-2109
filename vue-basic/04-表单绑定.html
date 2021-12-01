@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id='app'>
+
+    <span>姓名：</span>
+    <input type="text" v-model.trim='name' />
+    <!-- <input type="text" :value='name' @input='getName' /> -->
+    <!-- <input type="text" :value='name' @input='name=$event.target.value' /> -->
+    <br>
+    <span>简介：</span>
+    <textarea v-model.trim.lazy='desc'></textarea>
+    <br>
+
+    <span>幸运色：</span>
+    <input type="color" v-model='lucy' />
+    <br>
+
+    <span>性别：</span>
+
+    <!-- 不使用循环来构造单选按钮组 -->
+    <!-- <input type="radio" v-model='gender' :value='1' />男
+    <input type="radio" v-model='gender' :value='2' />女
+    <input type="radio" v-model='gender' :value='3' />保密 -->
+
+    <!-- 不用v-model的写法 -->
+    <!-- value，用于指定当前表单的 e.target.value -->
+    <!-- checked，用于控制当前表单是否勾选 -->
+    <!-- <span v-for='item in genderArr'>
+      <input
+        type="radio"
+        :value='item.value'
+        :checked='gender===item.value'
+        @change='gender=parseInt($event.target.value)'
+      />
+      <span v-text='item.label'></span>
+    </span> -->
+
+    <!-- 用v-model的写法 -->
+    <span v-for='item in genderArr'>
+      <input type="radio" v-model='gender' :value='item.value' />
+      <span v-text='item.label'></span>
+    </span>
+    <hr>
+
+
+    <span>爱好：</span>
+
+    <!-- 不用v-model的写法 -->
+    <!-- value，用于指定当前表单的 e.target.value -->
+    <!-- checked，用于控制当前表单是否勾选 -->
+    <!-- <span v-for='item in favArr'>
+      <input
+        type="checkbox"
+        :value='item.value'
+        :checked='favCbArr.includes(item.value)'
+        @change='$event.target.checked ? favCbArr.push(item.value) : favCbArr=favCbArr.filter(e=>e!==item.value)'
+      />
+      <span v-text='item.label'></span>
+    </span> -->
+
+    <!-- 用v-model的写法 -->
+    <span v-for='item in favArr'>
+      <input
+        type="checkbox"
+        v-model='favCbArr'
+        :value='item.value'
+      />
+      <span v-text='item.label'></span>
+    </span>
+    <hr>
+
+    <span>学历：</span>
+
+    <!-- 不用v-model的写法 -->
+    <!-- <select :value='level' @change='level=$event.target.value'>
+      <option
+        v-for='item in levelArr'
+        :value='item.value'
+        v-text='item.label'>
+      </option>
+    </select> -->
+
+    <!-- 用v-model的写法 -->
+    <select v-model='level'>
+      <option
+        v-for='item in levelArr'
+        :value='item.value'
+        v-text='item.label'>
+      </option>
+    </select>
+    <br>
+    
+    <button @click='submit'>提交</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 表单类型
+    // input[text/color/password/email]
+    // textarea
+    // input[file] 文件上传，直接上传
+    // input[checkbox/radio]
+    // select
+
+    // 进一步理解 v-model
+    // 对普通的文本框来讲 v-model = :value + @input
+    // 对radio和checkbox来讲  v-model = :checked + @change
+    // 对select来讲  v-model = :value + @change
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        name: '',
+        desc: '',
+        lucy: '#000000',
+        genderArr: [
+          { id: 1, label: '男', value: 1 },
+          { id: 2, label: '女', value: 2 },
+          { id: 3, label: '保密', value: 3 }
+        ],
+        gender: 1,  // 枚举 1-男 2-女 3-保密
+        favArr: [
+          { id: 1, label:'足球', value: 'football' },
+          { id: 2, label:'篮球', value: 'basketball' },
+          { id: 3, label:'乒乓球', value: 'pingbang' },
+          { id: 4, label:'跑步', value: 'run' },
+          { id: 5, label:'编程', value: 'coding' }
+        ],
+        favCbArr: [],
+        levelArr: [
+          { id: 1, label: '高中', value: 'a' },
+          { id: 2, label: '大专', value: 'b' },
+          { id: 3, label: '本科', value: 'c' },
+          { id: 4, label: '硕士', value: 'd' },
+          { id: 5, label: '博士', value: 'e' }
+        ],
+        level: ''
+      },
+      methods: {
+        // getName(ev) {
+        //   this.name = ev.target.value
+        // },
+        submit() {
+          const data = {
+            name: this.name,
+            desc: this.desc,
+            lucy: this.lucy,
+            gender: this.gender,
+            favCbArr: this.favCbArr,
+            level: this.level
+          }
+          console.log('提交', data)
+        }
+      }
+    })
+  </script>
+
+  <script>
+    // 作业1：把数组方法作为专题研究一遍（变异方法、非变异方法）
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+.page {
+  .search {
+    padding-top: 54rpx;
+    &>Input {
+      border: 1rpx solid #ccc;
+    }
+  }
+
+  .dots {
+    text-align: center;
+    Text {
+      display: inline-block;
+      width: 10rpx;
+      height: 6rpx;
+      border-radius: 3rpx;
+      background-color: #ccc;
+      margin: 0 10rpx;
+    }
+    Text.on {
+      width: 22rpx;
+      background-color: red;
+    }
+  }
+
+}

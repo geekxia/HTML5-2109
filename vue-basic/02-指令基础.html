@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    [v-cloak] { display: none; }
+    .red { color: red; }
+    .green { color: green; }
+  </style>
+</head>
+<body>
+
+  <div id='app'>
+
+    <h1 v-cloak>{{msg}}</h1>
+    <!-- <h1 v-text='msg'></h1> -->
+    <hr>
+
+    <h1 v-text='(msg+" World")'></h1>
+    <h1 v-text="(msg+' World')"></h1>
+    <h1 v-text='(`${msg} World`)'></h1>
+    <h1 v-text='Math.random()*100'></h1>
+    <!-- <h1 v-text='initName()'></h1> -->
+    <!-- <h1 v-text='true'></h1> -->
+    <!-- <h1 v-text='undefined'></h1> -->
+    <hr>
+
+    <div v-text='href'></div>
+    <div v-html='href'></div>
+    <hr>
+
+    <h1 v-text='msg'></h1>
+    <h1 v-once>{{msg}}</h1>
+    <hr>
+
+
+    <h1 title="H5" class="box">千锋第三阶段（静态属性）</h1>
+    <!-- <h1 v-bind:title='title'>千锋第三阶段（动态属性）</h1> -->
+    <h1 :title='title'>千锋第三阶段（动态属性）</h1>
+    <h1 :class='color'>我一行可以变色的文字</h1>
+    <hr>
+
+    <div style='width:200px;height:200px;background:red;' @click='outHandle'>
+      <div style="background:blue;" @click.stop='handle'>测试点击事件</div>
+    </div>
+    <hr>
+
+    <div>
+      <input type="checkbox" @click.prevent.stop='cbxHandle' />点击CheckBox<br>
+      <input type="text" v-model='todo' @keyup.enter='addTodo' />
+    </div>
+    <hr>
+
+    <!-- item，表示每次循环list时的一个临时变量，也就是数组中的每个元素 -->
+    <div v-for='(item, index) in list'>
+      <input type="checkbox" @click.prevent='rowClick(index)'/>
+      <input type="text" v-model='item.task' />
+      <span v-text='index'></span>
+    </div>
+    <hr>
+
+    <div v-for='(value, key, index) in user'>
+      <span v-text='index'></span>
+      -
+      <span v-text='key'></span>
+      ：
+      <span v-text='value'></span>
+    </div>
+    <hr>
+
+    <div v-for='(item,index) in 5'>
+      <span v-text='index'></span>
+      -
+      <span v-text='item'></span>
+    </div>
+    <hr>
+
+    <div>
+      <input type="text" v-model.trim='name' />
+      <input type="number" v-model.number='age' />
+      <br>
+      <textarea v-model.lazy.trim='desc'></textarea>
+    </div>
+    <hr>
+
+    <h1 v-show='bol'>我是一个可有可无的人</h1>
+    <hr>
+
+    <h1 v-if='bol'>我是白天</h1>
+    <h1 v-else>我是黑夜</h1>
+    <hr>
+
+    <!-- <h1 v-show='toggle===1'>1111</h1>
+    <h1 v-show='toggle===2'>2222</h1>
+    <h1 v-show='toggle===3'>3333</h1>
+    <h1 v-show='toggle===4'>4444</h1> -->
+
+    <h1 v-if='toggle===1'>1111</h1>
+    <h2 v-else-if='toggle===2'>2222</h2>
+    <h3 v-else-if='toggle===3'>3333</h3>
+    <h4 v-else>4444</h4>
+    <button @click='toggleNum'>循环显示</button>
+    <hr>
+
+    <div v-pre>
+      <h1>{{msg}}</h1>
+    </div>
+
+    <br><br><br><br><br><br><br><br><br><br><br>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 编程范式：基于选项配置的构建函数
+
+    // 问题：在Vue背后有没有DOM操作？有，只是你没有看到而已。
+    // 什么是指令？
+      // 那些在vue中内置的以"v-"开头的属性被称作是指令。
+      // 本质上指令的背后是对常用DOM操作的一种封装。
+
+    // 一、文本类指令
+
+    // {{}} 文本插值，用于绑定文本的值
+        // 缺点：有一闪而过的效果，比较难看。怎么办？建议使用v-text来代替。在某些场景下，只能使用{{}}，不能用v-text代替，这时候可以使用 v-cloak 来解决。
+        // v-cloak，就是用于解决{{}}一闪而过的问题。
+
+    // v-text 用于绑定文本的值（字符串渲染、数值渲染）
+      // 语法：v-text='表达式'
+
+    // v-html 用于渲染一段HTML字符串（浏览器引擎会解析v-html的值）
+      // 特点：v-html默认是可以防注入攻击XSS
+
+    // v-once 用于绑定文件的值
+      // 特点：v-once绑定的声明式变量如果发生变化，视图不会更新。也就是v-once只渲染一次。
+      // 注意：v-once只是一个修饰类的指令，不能给赋值。所以v-once只能和{{}}配合一起使用。
+
+    // 二、动态属性
+
+    // v-bind  用于动态绑定HTML属性，语法 v-bind:属性名='表达式'
+      // 简写成 :title=''  :id=''
+
+
+    // 三、事件绑定
+
+    // v-on 用于绑定DOM事件，语法 v-on:事件名.事件修饰符='事件处理函数'
+      // 事件处理函数，必须定义在methods选项中
+      // 简写成 @click=''
+      // 事件修饰符：@事件名.事件修饰符='事件处理器'
+        // .stop 表示阻止冒泡
+        // .prevent 表示阻止事件（a标签、input标签）
+        // .enter 绑定键盘的Enter事件
+        // .ctrl .shift .space .tab
+      // 表单的事件绑定
+        // @input=''  @change=''
+        // @blur=''  @focus=''
+        // @keyup.事件修饰符=''  @keypress=''
+      // 事件传参
+        // 语法：@事件名='事件处理函数(item, index, $event)'
+        // 当有自定义传参时，要使用$event手动传递事件对象
+        // 当不需要自定义传参时，事件处理函数的默认参数就是事件对象
+
+    // 四、列表渲染
+
+    // v-for 用于渲染列表、对象、Number、Map、Set等
+      // 注意：那些可以被 for...of 遍历的数据结构，都可以用在v-for上
+      // 渲染数组的语法：v-for='(item, index) in list'
+      // 渲染对象的语法：v-for='(value, key, index) in user'
+      // 循环数值的语法：v-for='(item,index) in 100'
+
+    // 五、表单绑定
+
+    // v-model 用于表单双向绑定
+      // 什么是“表单双向绑定”？凡是使用v-model绑定表单时，视图中表单输入的值和data声明式变量保持同步。
+      // 语法：v-model.表单修饰符='声明式变量'
+        // .trim 用于去除文本值首尾的空字符串
+        // .number 用于把字符串转化成Number类型
+        // .lazy 只有表单失焦时，才把视图中表单的最新值更新到data声明式变量上。常常用于长文本类的表单。这是一种性能优化。
+        // 表单修饰符，也支持链式调用。
+
+
+    // 六、条件渲染
+
+    // v-show  使用display:none实现对元素进行显示与隐藏
+    // v-if/v-else-if/v-else  使用DOM移除与插入操作，实现元素的显示与隐藏
+      // 注意：虽然v-show、v-if都可以实现显示与隐藏，但是v-if的性能损耗更高。
+      // 注意：当我们使用v-if/v-else-if/v-else时，中间不能混杂着其它无关的元素，否则会报错。
+
+
+    // 七、插槽Slot（在组件化时再讲）
+
+    // v-slot 用于组件化，可以简写成 #
+    // Vue组件化 = v-bind + v-on + v-slot
+
+
+    // 八、阻止编译
+
+    // v-pre 凡是被v-pre所包裹的节点，不会参与编译，所以它内部的指令都不起作用了。
+    // 一般很少用，偶尔用于代码的调试。
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        msg: 'Hello',
+        href: '<a href="https://baidu.com">百度</a><ul><li>小明</li><li>小王</li></ul>',
+        title: 'Java',
+        color: 'red',
+        todo: '',
+        list: [
+          { id: 1, task: '吃饭' },
+          { id: 2, task: '读书' },
+          { id: 3, task: '跑步' }
+        ],
+        user: {
+          name: '张三',
+          age: 20,
+          addr: '广东深圳'
+        },
+        name: '',
+        age: 0,
+        desc: '',
+        bol: true,
+        toggle: 1
+      },
+      methods: {
+        initName() {
+          return 'Hello 2109'
+        },
+        handle() {
+          console.log('clicked')
+        },
+        outHandle() {
+          console.log('outer clicked')
+        },
+        cbxHandle() {
+          console.log('你点击了checkbox')
+        },
+        addTodo() {
+          console.log('enter', this.todo)
+        },
+        rowClick(idx) {
+          console.log('row clicked', idx)
+          this.list.splice(idx,1)
+        },
+        toggleNum() {
+          if(this.toggle===4) {
+            this.toggle = 1
+          }else{
+            this.toggle++
+          }
+        }
+      }
+    })
+
+    // setInterval(()=>{
+    //   console.log('desc', app.desc)
+    // },200)
+
+  </script>
+
+</body>
+</html>

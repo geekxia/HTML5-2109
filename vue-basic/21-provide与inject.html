@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <qf-child></qf-child>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('qf-child', {
+      template: `
+      <div>
+        <h4>我是子组件</h4>
+      </div>
+      `,
+      data() {
+        return {
+          a: 1000
+        }
+      },
+      // inject: ['a', 'b', 'user'],
+      inject: {
+        pa: 'a',
+        pb: 'b',
+        puser: 'user'
+      },
+      mounted() {
+        console.log('pa', this.pa)
+        console.log('pb', this.pb)
+        console.log('puser', this.puser)
+      }
+    })
+  </script>
+  <script>
+    // provide 与 inject
+    // 作用：从父级组件向后代组件提供数据（只能提供数据，不能提供方法）。
+    // provide，向后代组件提供静态的或动态的数据。
+    // inject，接受父级组件给我的数据。
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        user: {
+          name: 'lisi',
+          age: 30
+        }
+      },
+      // provide: {
+      //   a: 100,
+      //   b: true
+      // }
+      provide() {
+        // do something
+        return {
+          a: 100,
+          b: true,
+          user: this.user
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

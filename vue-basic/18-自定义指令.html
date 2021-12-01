@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <h2 v-color='"red"'>你好</h2>
+    <button v-myon:click.stop='handle'>点击</button>
+    <hr>
+
+    <input type="text" v-focus />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 自定义指令
+    // 两种：全局指令，局部指令
+    // 全局指令，使用Vue.directive('',{}|fn)定义指令，在所有组件中可以直接访问。
+    // 局部指令，使用directives这个选项来定义指令，只能在当前组件中使用。
+    // 作用：把一些常用的DOM操作封装成可以复用的指令。
+
+    // 扩展思考：每个指令实际上都是对一组相似DOM操作的封装。
+    // 推荐几个常用指令：https://zhuanlan.zhihu.com/p/337659611
+
+    // el 表示当前指令所作用的DOM节点对象
+    // binding 是一个对象，里面有很多信息和数据
+    Vue.directive('color', function(el, binding) {
+      // console.log('el', el)
+      // console.log('binding', binding)
+      el.style.color = binding.value
+    })
+
+    Vue.directive('myon', function(el, binding){
+      console.log('el', el)
+      console.log('binding', binding)
+      el.addEventListener(binding.arg, function(ev){
+        if (binding.modifiers.stop) ev.stopPropagation()
+        // do something
+        binding.value(ev)
+      })
+    })
+
+    var app = new Vue({
+      el: '#app',
+      directives: {
+        focus: {
+          inserted(el, binding) {
+            el.focus()
+          }
+        }
+      },
+      methods: {
+        handle(ev) {
+          console.log('clicked', ev)
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

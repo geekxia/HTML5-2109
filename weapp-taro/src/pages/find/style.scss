@@ -1,0 +1,15 @@
+.page {
+  .navs {
+    line-height: 80rpx;
+    white-space: nowrap;
+    Text {
+      display: inline-block;
+      padding: 0 50rpx;
+      border: 1rpx solid #eee;
+    }
+    Text.on {
+      background-color: red;
+      color: white;
+    }
+  }
+}

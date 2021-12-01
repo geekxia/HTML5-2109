@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .cates span {
+      display: inline-block;
+      padding: 0 20px;
+      border: 1px solid #ccc;
+      line-height: 50px;
+      cursor: pointer;
+    }
+    .cates span.on {
+      background: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    折扣：<input type="text" v-model='price' />
+    <h1>总价：<span v-text='total'></span></h1>
+    <hr>
+
+    <div class='cates'>
+      <span
+        v-for='item in cates'
+        :class='(selId===item.id?"on":"")'
+        @click='selId=item.id'
+        v-text='item.cate'>
+      </span>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+
+    // 侦听器（选项）watch
+    // 作用：当我们需要监听一个响应式变量的变化时，就可以使用watch。
+    // 特点：侦听器只能监听四类数据（data变量、计算属性、路由$route、vuex数据）的变化
+
+    // 面试题：计算属性和侦听器有什么区别？
+    // 1、计算属性是对响应式变量进行复杂运行，它的目的不是为了监听数据变化，而是解决视图中表达式难以维护的问题。
+    // 2、侦听器是专用于监听响应式变量的变化的。通常当某个响应式变量变化，我们需要做另外一件事。
+    // 3、计算属性可以用this进行访问，在视图指令中也可以使用。但是侦听器函数不能被调用。
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        price: 100,
+        cates: [
+          { id: 1, cate: '全部' },
+          { id: 2, cate: '精华' },
+          { id: 3, cate: '问答' },
+          { id: 4, cate: '招聘' },
+          { id: 5, cate: '分享' }
+        ],
+        selId: 1
+      },
+      computed: {
+        total() {
+          return 898*this.price/100
+        }
+      },
+      watch: {
+        price(newVal, oldVal) {
+          console.log('price发生了变化：', newVal, oldVal)
+          // do something
+        },
+        // price: {
+        //   handler(new, old) {
+        //     console.log('price发生了变化：', newVal, oldVal)
+        //   }
+        // },
+
+        // total(newVal, oldVal) {
+        //   console.log('total发生了变化：', this.total, oldVal)
+        // }
+        total: {
+          handler(newVal, oldVal) {
+            console.log('total发生了变化：', this.total, oldVal)
+          },
+          deep: true
+        },
+        selId() {
+          console.log(`使用${this.selId}来调接口`)
+        }
+      },
+      // methods: {
+      //   toggleCate(item) {
+      //     this.selId = item.id
+      //   }
+      // }
+    })
+  </script>
+
+</body>
+</html>

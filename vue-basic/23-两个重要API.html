@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <div v-html='content'></div>
+    <button @click='addHTML'>添加一段HTML视图</button>
+    <hr>
+
+    <div v-for='item in list'>
+      <span v-text='item.good.name'></span>
+      <span>：</span>
+      <span v-text='item.good.num'></span>
+    </div>
+    <button @click='updateList'>更新列表</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // $nextTick(()=>{})
+    // 场景：当我们需要对视图结构中的某个动态的HTML节点做DOM操作时，在$nextTick()的回调函数中访问动态HTML节点的DOM对象。
+    // 思考：$nextTick() 和 updated() 常常可以解决相似的问题。
+
+    // $forceUpdate()
+    // 场景：当某些情况下你明明修改data成功了，但是视图不更新时，可以使用$forceUpdate()来强制更新视图。
+    // 思考：$forceUpdate() 和 “深拷贝方法” 常常可以解决相似的问题。
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        content: '',
+        list: [
+          { id: 1, good: { name: '手机', num: 100 } },
+          { id: 2, good: { name: '电脑', num: 200 } },
+          { id: 3, good: { name: '键盘', num: 300 } }
+        ]
+      },
+      methods: {
+        addHTML() {
+          this.content = '<div id="box"><h2>我是来自后端的HTML字符串</h2></div>'
+          // 在$nextTick中访问动态HTML节点的DOM对象
+          this.$nextTick(()=>{
+            const oBox = document.getElementById('box')
+            console.log('oBox', oBox)
+            oBox.style.color = 'red'
+          })
+        },
+        updateList() {
+          this.list[2].good.num++
+          this.$forceUpdate()
+          // this.list = JSON.parse(JSON.stringify(this.list))
+        }
+      }
+    })
+  </script>
+</body>
+</html>

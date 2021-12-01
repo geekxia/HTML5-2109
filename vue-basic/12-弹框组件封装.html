@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .qf-layer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.4);
+    }
+    .qf-modal {
+      width: 420px;
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      margin-left: -210px;
+      background: white;
+      border-radius: 5px;
+      padding: 0 15px;
+    }
+    .qf-modal .header {
+      line-height: 50px;
+      height: 50px;
+      overflow: hidden;
+    }
+    .header span:last-child {
+      float: right;
+      cursor: pointer;
+    }
+    .qf-modal .footer {
+      line-height: 50px;
+      height: 50px;
+      overflow: hidden;
+    }
+    .footer span {
+      float: right;
+      width: 50px;
+      height: 30px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 3px;
+      box-sizing: border-box;
+      font-size: 12px;
+      text-align: center;
+      line-height: 30px;
+      margin-left: 10px;
+    }
+    .footer span.confirm {
+      background: blue;
+      color: white;
+    }
+    .footer span.danger {
+      background: red;
+      color: white;
+    }
+    .footer span.cancel {
+      background: white
+      color: #666666;
+      border: 1px solid #eee;
+    }
+    .qf-modal .body {
+      padding: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id='app'>
+    <cn-cate></cn-cate>
+    <cn-list></cn-list>
+    <cn-page></cn-page>
+  </div>
+
+  <div id='app'>
+    <h1>测试弹框组件</h1>
+    <button @click='show=!show'>删除用户</button>
+
+    <qf-modal
+      title='修改用户名'
+      type='danger'
+      :show='show'
+      @close='show=!show'
+      @ok='sumbit'
+    >
+      <template #default>
+        <!-- <div>
+          用户名：<input type="text"/>
+          <br>
+          密码：<input type="text"/>
+        </div> -->
+        你确定要删除这个用户吗？
+      </template>
+    </qf-modal>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('qf-modal', {
+      template: `
+      <div class='qf-layer' v-if='show'>
+        <div class='qf-modal'>
+          <div class='header'>
+            <span v-text='title'></span>
+            <span @click='$emit("close")'>X</span>
+          </div>
+          <div class='body'>
+            <slot></slot>
+          </div>
+          <div class='footer'>
+            <span
+              v-for='item in btns'
+              :class='item.type'
+              @click='$emit(item.callback)'
+              v-text='item.text'>
+            </span>
+          </div>
+        </div>
+      </div>
+      `,
+      props: {
+        title: { type: String, required: false, default: '标题' },
+        type: { type: String, required: false, default: 'confirm' },
+        show: { type: Boolean, required: false, default: false }
+      },
+      computed: {
+        btns() {
+          const b1 = { type: 'confirm', text: '确定', callback:'ok' }
+          const b2 = { type: 'danger', text: '删除', callback:'ok' }
+          const b3 = { type: 'cancel', text: '取消', callback:'close' }
+          const arr = [
+            { type: 'confirm', children: [b1, b3] },
+            { type: 'danger', children: [b2, b3] },
+            { type: 'info', children: [b1] },
+            { type: 'cancel', children: [b3] }
+          ]
+          const ele = arr.find(ele=>ele.type===this.type)
+          return ele?ele.children:arr[0].children
+        }
+      }
+    })
+  </script>
+  <script>
+    // 一、自定义插槽
+
+    // <slot>是Vue内置的一个组件，被称之为“插槽”
+    // 作用：当封装组件时，组件中某个区域不确定放置什么元素时，我们通常用一个<slot>占位。用户在使用自定义组件时，在组件内部所嵌套的视图结构，将渲染到<slot>这个占位上。
+    // 细节：<slot>是有名字的，默认叫'default'。当封装自定义组件时，如果组件内部有多个位置是不确定的，建议使用‘命名插槽’进行区分。用户在使用自定义组件时，在`<template #插槽名></template>`向指定插槽中渲染内容。
+    // 指令：v-slot:default 可以简写成 #default
+
+    // 二、进一步理解Vue组件化
+
+    // Vue自定义组件 = v-bind:自定义属性 + v-on:自定义事件 + v-slot:插槽名
+    // Vue自定义组件 = 自定义属性props + 自定义事件this.$emit() + 自定义插槽<slot>
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        show: false
+      },
+      methods: {
+        sumbit() {
+          console.log('提交接口')
+          this.show = !this.show
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

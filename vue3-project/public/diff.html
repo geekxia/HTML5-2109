@@ -1,0 +1,127 @@
+
+<div class='box' title='box'>
+  <p>Hello World</p>
+  <p v-bind:title='t'>{{msg}}</p>
+</div>
+
+<script>
+  // 虚拟DOM：它是一个JSON对象，它是对真实DOM的一种虚拟描述，它保存在内存中，它是diff运算的数据源。
+
+  // vue2.0
+  const ctx = {
+    t: 'hello p',
+    msg: 'hello gp6'
+  }
+  var vnode1 = {
+    tag: 'div',
+    attrs: {
+      class: 'box',
+      title: 'box'
+    },
+    children: [
+      {
+        tag: 'p',
+        attrs: {},
+        children: ['Hello World']
+      },
+      {
+        tag: 'p',
+        attrs: {
+          title: 'hello msg'  // ctx.msg
+        },
+        children: [ctx.msg]
+      }
+    ]
+  }
+  // 发生了风吹草动，ctx.msg = 'hello gp6'
+  var vnode2 = {
+    tag: 'div',
+    attrs: {
+      class: 'box',
+      title: 'box'
+    },
+    children: [
+      {
+        tag: 'p',
+        attrs: {},
+        children: ['Hello World']
+      },
+      {
+        tag: 'p',
+        attrs: {
+          title: 'hello gp6'  // ctx.msg
+        },
+        children: [ctx.msg]
+      }
+    ]
+  }
+  // 进入下一步 diff
+  var dirty = diff(vnode1, vnode2)
+  patch(dirty)  // watcher
+
+
+  // vue3.0的虚拟DOM
+  _c(
+  'div',
+  {
+      staticClass: "box",
+      attrs: {
+        "title": "box"
+      }
+  },
+  [
+    _c('p', [_v("Hello World")]),
+
+    _c('p', {
+      attrs: {
+        "title": t
+      }
+    }, [_v(_s(msg))])
+  ]
+  )
+
+
+  const _hoisted_1 = {
+    class: "box",
+    title: "box"
+  }
+  const _hoisted_2 = /*#__PURE__*/_createElementVNode("p", null, "Hello World", -1 /* HOISTED */)
+  const _hoisted_3 = ["title"]
+  const _cache = []
+
+  (
+    _openBlock(),
+    _createElementBlock(
+      "div",
+      _hoisted_1,
+      [
+        _hoisted_2,
+        _createElementVNode(
+          "p",
+          { title: _ctx.t },
+          _toDisplayString(_ctx.msg),
+          9 /* TEXT, PROPS */,
+          _hoisted_3
+        )
+  ]))
+
+  (
+    _openBlock(),
+    _createElementBlock(
+      "div",
+      _hoisted_1,
+      [
+        _hoisted_2,
+        _createElementVNode(
+          "p",
+          { title: _ctx.t },
+          _toDisplayString(_ctx.msg),
+          9 /* TEXT, PROPS */,
+          _hoisted_3
+        )
+  ]))
+
+  var dirty = diff(vm1, vm2)
+  patch(dirty)
+
+</script>

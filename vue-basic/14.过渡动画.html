@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  /* 定义元素或组件显示的动画样式 */
+  .xxx-enter {
+    opacity: 0;
+    font-size: 12px;
+    color: red;
+  }
+  .xxx-enter-active {
+    transition: all 2s ease;
+  }
+  /* .xxx-enter-to {
+    opacity: 0.8;
+    color: black;
+    font-size: 30px;
+  } */
+  /* 定义元素或组件隐藏的动画样式 */
+  /* .xxx-leave {
+    opacity: 1;
+    color: black;
+    font-size: 30px;
+  } */
+  .xxx-leave-active {
+    transition: all 1s ease;
+  }
+  .xxx-leave-to {
+    opacity: 0;
+    color: green;
+    font-size: 12px;
+  }
+  </style>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+</head>
+<body>
+
+  <div id="app">
+    <!-- name用于指定使用一组自定义的过渡动画 -->
+    <transition name='xxx'>
+      <h1 v-if='bol1'>我是一个可有可无的元素</h1>
+    </transition>
+    <button @click='bol1=!bol1'>显示与隐藏</button>
+    <hr>
+
+    <!-- 使用animate.css第三方动画 -->
+    <transition
+      enter-active-class='animate__animated animate__bounceInDown'
+      leave-active-class='animate__animated animate__bounceOutRight'
+    >
+      <h1 v-show='bol2'>测试第三库的动画效果</h1>
+    </transition>
+    <button @click='bol2=!bol2'>显示与隐藏</button>
+    <hr>
+
+    <!-- 对多个元素或组件执行动画 -->
+    <!-- 当对多个元素执行动画时，还可以使用mode来指定'in-out'或'out-in' -->
+    <!-- 坑：对多元素执行过渡动画时，要加key，key是给diff运算用的，减少没必要的DOM操作 -->
+    <transition
+      enter-active-class='animate__animated animate__fadeInDown'
+      leave-active-class='animate__animated animate__fadeOutRightBig'
+      mode='out-in'
+    >
+      <h1 key='a' v-if='tab===1'>被动休息</h1>
+      <h1 key='b' v-else-if='tab===2'>主动休息</h1>
+      <h1 key='c' v-else>我不休息</h1>
+    </transition>
+    <button @click='tab=(tab===3)?1:tab+1'>Toggle休息</button>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 过渡动画
+    // 作用：元素或组件是显示与隐藏时，添加上过渡动画，提升用户体验。
+    // 用法：使用<transition>内置把要显示和隐藏的元素或组件包起来，并指定自定义动画或第三方动画。
+    // 注意：Vue过渡动画只是对动画过程的定义，不影响元素的最终样式，也就是Vue过滤动画不会被保留。元素最终的样式取决于class和style。
+    // .name-enter  定义显示刚开始时的样式
+    // .name-enter-active  定义显示过程的样式
+    // .name-enter-to  可省略
+    // .name-leave  可省略
+    // .name-leave-active   定义隐藏过程的样式
+    // .name-leave-to   定义隐藏结束时的样式
+    const app = new Vue({
+      el: '#app',
+      data: {
+        bol1: true,
+        bol2: true,
+        tab: 1
+      }
+    })
+  </script>
+
+</body>
+</html>

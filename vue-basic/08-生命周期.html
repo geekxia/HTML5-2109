@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id='app'>
+    <h1 v-text='count'></h1>
+    <h1>我是永远不会变的内容</h1>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // Vue应用程序，通常由多个Vue组件构成
+
+    // 如何理解生命周期？
+    // 生命周期描述的是vue组件从创建到销毁的完整过程（你可以类比成人的一生）
+    // 生命周期只能满足条件时，自动执行。用户是不能调用生命周期的。
+
+    // Vue生命周期分为四个阶段（常用的有8个）：
+    // 第1阶段：创建阶段（造人->出生）
+    // 第2阶段：挂载阶段（上户口的过程）
+    // 第3阶段：更新阶段（幼儿园、小学、中学、大学、升职加薪）
+    // 第4阶段：销毁阶段（走向死亡）
+
+    const app = new Vue({
+      // el: '#app',
+      // 在第1阶段之前（new Vue之后），Vue还做了两件重要的事
+      // 对生命周期钩子函数进行初始化声明
+      // 对methods中所有的方法进行初始化声明
+
+      data: {
+        count: 1
+      },
+
+      // 第1阶段：创建阶段
+      // （1）data选项上数据，使用Object.defineProperty进行劫持
+      // （2）响应式依赖收集（依赖注入）
+      // 对同一个组件，创建阶段会执行几次？（一次）
+      // 注意：所以以后在使用响应式变量，先定义再使用。
+      beforeCreate() {
+        console.log('--------beforeCreate')
+      },
+      created() {
+        console.log('--------created')
+        // 工作中,一般在这里调接口
+      },
+
+      // 在第1阶段之后（第2阶段之前）Vue组件通过el选项或者$mount()来寻找视图模板
+      // 经过一系列的判断，最终把视图模板转化成render函数（为后面生成vm而准备的）
+      // render函数会把带有指令的template视图转化成抽象语法树(AST)
+
+      // 第2阶段：挂载阶段
+      // （1）用AST抽象语法树生成虚拟DOM
+      // （2）把虚拟DOM渲染（替换）成真实的DOM树
+
+      // 什么是虚拟DOM？
+      // 实际上虚拟DOM是对真实DOM结构的一种描述，它本质上是一个JSON文件。
+      // 虚拟DOM是一种特殊的数据结构，它保存在当前Vue应用程序所对应的内存中。
+
+      // 为什么需要虚拟DOM ? 这是为了给更新阶段来使用的.
+
+      // 对同一组件,挂载阶段也只执行一次.
+      beforeMount() {
+        console.log('--------beforeMount')
+      },
+      mounted() {
+        console.log('--------mounted')
+        // 调后端接口
+        // 开启定时器
+        // 初始化一些基于DOM的第三方插件
+        // 开启websocket长连接
+        this.timer = setInterval(()=>console.log('timer'), 1000)
+      },
+
+      // 第3阶段 : 更新阶段
+      // 问题: 当某些声明式变量发生变化时,我们希望vue帮助我们更新视图. 那么vue更新视图有什么依据?是整个更新,还局部更新?
+      // (1) 当有data变化时, 重新生成一个新的虚拟DOM,开始参考patch(diff)运算
+      // (2) 对新旧这两个虚拟DOM进行diff运算,找到数据变化前后的所有脏节点,再通知Watcher局部更新视图. 视图更新完成后,旧的虚拟DOM将被删除.
+
+      // 在更新阶段,为什么要这样做? Vue需要找出数据变化前后最小化的更新任务,预示着进行最少地DOM操作. 所以这种基于虚拟DOM的MVVVM是划时代的.
+
+      // 更新阶段,可以执行0次或多次
+      beforeUpdate() {
+        console.log('--------beforeUpdate')
+      },
+      updated() {
+        console.log('--------updated')
+      },
+
+      // 第4阶段: 销毁阶段
+      // (1) 拆卸掉Watcher(响应式失效了)
+      // (2) 把当前组件和子组件中的事件处理器都解绑(各种交互事件没用了)
+
+      // 如何触发组件的销毁?
+      // 有两种方式: 通过vue-router来触发组件的销毁, 使用$destroy()手动销毁
+      beforeDestroy() {
+        console.log('--------beforeDestroy')
+        // 关闭定时器
+        clearInterval(this.timer)
+        // 清除缓存
+        // 关于websocket长链接
+        // 清除一些占用内存的变量
+      },
+      destroyed() {
+        console.log('--------destroyed', this)
+      },
+      methods: {}
+    })
+    app.$mount('#app')
+
+  </script>
+
+  <script>
+    // 真实DOM
+    // <div id='app'>
+    //   <h1 v-text='count'></h1>
+    // </div>
+
+    const _ctx = {
+      count: 100
+    }
+
+    const vm1 = {
+      tag: 'div',
+      props: {
+        id: 'app'
+      },
+      children: [
+        {
+          tag: 'h1',
+          props: {},
+          children: [
+            {
+              tag: 'TEXT',
+              props: {},
+              text: _ctx.count
+            }
+          ]
+        }
+      ]
+    }
+
+    // _ctx.count++
+    const vm2 = {
+      tag: 'div',
+      props: {
+        id: 'app'
+      },
+      children: [
+        {
+          tag: 'h1',
+          props: {},
+          children: [
+            {
+              tag: 'TEXT',
+              props: {},
+              text: _ctx.count,
+              dirty: true
+            }
+          ]
+        }
+      ]
+    }
+
+    // const dirtyArr = patch(vm1, vm2) // 递归运算
+    // 通知Watcher根据dirtyArr进行视图更新
+  </script>
+
+</body>
+</html>

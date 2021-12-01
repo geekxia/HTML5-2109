@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <qf-async-button></qf-async-button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('qf-async-button', function(resolve, reject){
+      setTimeout(()=>{
+        resolve({
+          template: `<button>我是异步加载的按钮</button>`,
+          props: {},
+          data() { return {} },
+          mounted() { console.log('qf-async-button mounted')}
+        })
+      }, 3000)
+    })
+  </script>
+  <script>
+    // 异步组件，在Vue开发非常重要
+    // 最主要的作用：解决Vue-Router路由懒加载
+    var app = new Vue({
+      el: '#app'
+    })
+  </script>
+
+</body>
+</html>

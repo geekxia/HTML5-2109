@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .lang { display: flex;}
+    .lang span { flex: 1; line-height: 50px; border: 1px solid #ccc; text-align: center;cursor: pointer;}
+    .lang span.on { color: red; }
+  </style>
+</head>
+<body>
+
+  <div id='app'>
+
+    <h1 ref='box'>测试Ref操作</h1>
+    <hr>
+    <span>用户名：</span>
+    <input id='name' type="text" />
+    <br>
+
+    <span>密码：</span>
+    <input ref='pass' type="text" />
+    <br>
+
+    <qf-lang ref='child'></qf-lang>
+    <hr>
+
+    <qf-lang></qf-lang>
+
+
+
+    <button @click='submit'>提交</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 类表单
+    Vue.component('qf-lang', {
+      template: `
+      <div class='lang'>
+        <span
+          v-for='item in list'
+          :class='{"on": lang===item.value}'
+          @click='lang=item.value'
+          v-text='item.label'>
+        </span>
+      </div>
+      `,
+      data() {
+        return {
+          list: [
+            { id: 1, label: '中文', value: 'zh' },
+            { id: 2, label: '英文', value: 'en' },
+            { id: 3, label: '日语', value: 'jp' },
+            { id: 4, label: '德语', value: 'ge' }
+          ],
+          lang: 'zh'
+        }
+      },
+      methods: {
+        run(msg) { console.log('qf-lang run', msg) }
+      },
+      mounted() {
+        console.log('parent', this.$parent)
+      }
+    })
+  </script>
+  <script>
+    // 一、ref 与 $refs
+    // 作用：是Vue中内置一种快捷访问DOM对象或组件实例对象的方式。
+
+    // 注意1：当ref访问普通的HTML标签时，这就是DOM对象。通过这个ref对象可以做任意的DOM操作。
+    // 注意2：当ref访问Vue组件时，这是Vue组件实例。通过这个ref对象可以访问子组件实例上的数据和方法（这也算是一种组件之间的通信方案）。
+
+
+    // 二、$parent 与 $children
+    // 作用：使用这两个内置api，可以在Vue树之间随意穿梭。预示你可以在某个具体的组件中，访问到当前Vue环境下其它任意组件的数据和方法。
+    // 理解：这种在组件树之间穿梭的方式，也算是一种组件之间的通信方案。
+
+
+    var app = new Vue({
+      el: '#app',
+      mounted() {
+        this.$refs.box.style.color = 'red'
+        this.$refs.child.run('happy')
+      },
+      methods: {
+        submit() {
+          // console.log('refs', this.$refs)
+          console.log('children', this.$children)
+          const data = {
+            name: document.getElementById('name').value,
+            pass: this.$refs.pass.value,
+            lang1: this.$refs.child.lang,
+            lang2: this.$children[1].lang
+          }
+          console.log('提交', data)
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .qf-rate span {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      margin: 15px;
+      background: url('./image/star.png') center center / 80px 80px;
+      cursor: pointer;
+    }
+    .qf-rate span.on {
+      background: url('./image/star-on.png') center center / 80px 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <!-- value自定义属性，input自定义事件 -->
+    <!-- <qf-rate :value='score' @input='score=$event'></qf-rate> -->
+
+    <!-- v-model = :value + @input -->
+    <qf-rate v-model='score'></qf-rate>
+    <h1>当前评分是：<span v-text='score'></span>分</h1>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    Vue.component('qf-rate', {
+      template: `
+      <div class='qf-rate'>
+        <span
+          v-for='i in 5'
+          :class='{"on":i<=value}'
+          @click='$emit("input", i)'
+        >
+        </span>
+      </div>
+      `,
+      props: {
+        // 在这里接收v-model给我的value属性
+        value: { type: Number, required: false, default: 0 }
+      }
+    })
+  </script>
+  <script>
+    // 类表单：像这种评分组件，我们通常称之为“类表单”。
+    // v-model = :value + @input
+    // v-model高级用法：常常用在类表单上使用v-model进行数据通信的双向绑定。
+    
+    var app = new Vue({
+      el: '#app',
+      data: {
+        score: 1
+      }
+    })
+  </script>
+
+</body>
+</html>

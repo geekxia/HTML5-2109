@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="app">
+    <h1 v-text='name'></h1>
+    <qf-button></qf-button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 混入Mixin（尽量不要用）
+    // 两种：全局混入、局部混入
+    // 作用：代码逻辑的一种复用。
+    // 全局混入：使用 Vue.mixin({选项}) 向所有组件中混入vue选项。
+    // 局部混入：在组件上使用 mixins 这个选项手动混入我们需要的vue选项。
+
+    // 混入选项的优先级：全局混入 < 局部混入 < 组件自有选项
+
+    Vue.mixin({
+      data() {
+        return {
+          name: '2109'
+        }
+      },
+      created() { console.log('created') },
+      methods: {
+        favId(id) {
+          console.log(`埋点，调接口把商品${id}发送给后端`)
+        }
+      }
+    })
+
+    const mix1 = {
+      data() {
+        return {
+          msg: 'hehe',
+          name: '2110'
+        }
+      }
+    }
+
+    const mix2 = {
+      methods: {
+        foo() {
+          console.log('foo run')
+        }
+      }
+    }
+
+    Vue.component('qf-button', {
+      template: `
+      <div>
+        <button>我是一个按钮</button>
+        <h3 v-text='name'></h3>
+      </div>
+      `,
+      mixins: [mix1, mix2],
+      mounted() {
+        this.favId(100)
+        console.log('qf-button hehe', this.hehe)
+        this.foo()
+      }
+    })
+
+    var app = new Vue({
+      el: '#app',
+      mixins: [mix1, mix2],
+      data: {
+        name: '2111',
+      },
+      mounted() {
+        console.log('app name', this.name)
+        this.favId(300)
+      }
+    })
+  </script>
+
+</body>
+</html>

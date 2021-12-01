@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    [v-cloak] { display: none;}
+  </style>
+</head>
+<body>
+
+  <div id='app'>
+    <!-- <h1 v-text='("SZ"+no)'></h1> -->
+    <h1 :title='no|stu' v-cloak>{{no|stu}}</h1>
+    <hr>
+
+    <h1 v-cloak>{{price|dbl|rmb}}</h1>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    // 过滤器 Filter
+    // 两种：全局过滤器、局部过滤器
+    // 作用：用于处理文本值的一种逻辑封装。
+    // 全局过滤器，使用Vue.filter('',fn)定义，是全局注入，在任何组件中都可以直接使用。
+    // 局部过滤器，使用filters选项来定义，是局部注入，只能在当前组件的内部使用。
+
+    // 注意：过滤器只能用在 {{}} 和 v-bind 中。
+    // 特点：过滤器可以链式调用 {{ name|f1|f2 }}，链式调用时对顺序有所讲究。
+
+    Vue.filter('stu', function(val){
+      return 'SZ'+val
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        no: '210900002',
+        price: '89.78362722'
+      },
+      filters: {
+        rmb(val) {
+          return `￥${val}`
+        },
+        dbl(val) {
+          return Number(val).toFixed(2)
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

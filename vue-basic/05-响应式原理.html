@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <div>
+    <input id='ipt' type="text" />
+    <h3 id='h3'></h3>
+  </div>
+
+  <script>
+    // 在这里定义响应式变量
+    var data = {
+      name: '1',
+      pass: '2'
+    }
+
+    // 第一步：把vue组件中data进行响应式劫持
+    // 劫持之后，做依赖收集（观察者模式、订阅发布模式），收集“响应式变量->DOM节点”的映射关系
+    var app = {}
+    Object.keys(data).forEach(key=>{
+      // 所谓的“劫持”，就是给普通对象的属性添加get/set钩子函数
+      // 当这个属性被访问时，触发get函数执行
+      // 当这个属性的值被修改时，触发set函数执行
+      Object.defineProperty(app, key, {
+        get() {
+          console.log(`你访问了${key}`)
+          return data[key]
+        },
+        set(newVal) {
+          console.log(`你修改了${key}`)
+          data[key] = newVal
+          Watcher()
+        }
+      })
+    })
+
+    // 第二步：初始化页面（通过Watcher进行页面初始化）
+    function init() {
+      // v-bind:value
+      // document.getElementById('ipt').value = app.name
+      // v-text
+      // document.getElementById('h3').innerText = app.name
+
+      // v-on:input
+      document.getElementById('ipt').addEventListener('input', function(e){
+        // 当表单发生变化时，取出表单最新值，更新到响应式变量上
+        app.name = e.target.value
+      })
+      Watcher()
+    }
+    init()
+
+    // 第三步：当响应式变量发生变化时，触发set函数执行，再调用Watcher更新DOM
+    function Watcher() {
+      document.getElementById('ipt').value = app.name
+      document.getElementById('h3').innerText = app.name
+    }
+  </script>
+
+
+  <script>
+    // 普通对象的定义，我们是没有办法监听到它的变化
+    // 结论：这种普通对象定义，是不具有响应式的。
+    var obj1 = { a: 1, b: 2 }
+    obj1.a = 100
+
+    // 使用Object.defineProperty定义的对象，具有了get/set钩子
+    // 结论：这种方式定义的对象，具有响应式
+    var obj2 = {}
+    var c = 3
+    Object.defineProperty(obj2, 'c', {
+      get() {
+        console.log('有人访问了 c')
+        return c
+      },
+      set(newVal) {
+        console.log('有人修改了 c')
+        c = newVal
+      }
+    })
+  </script>
+
+</body>
+</html>
